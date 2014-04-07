@@ -156,6 +156,7 @@ abstract class EventHandler extends Thread
         {
             $this->wipeSharedMemory();
             $newEvents = $this->isTerminating ? array () : $this->getEvents();
+            file_put_contents('tmp/dbg', var_export($this->isTerminating,1));
 
             foreach($newEvents as $Event)
             {
@@ -168,9 +169,15 @@ abstract class EventHandler extends Thread
             }
 
             $this->showMonitor();
+            $this->cleanUp();
 
             if(count($this->Handlers) == 0 && $this->isTerminating)
+            {
+                //End
+                $this->showMonitor();
+                echo "Daemon successfully terminated!";
                 exit;
+            }
             usleep($this->timeoutMicroSeconds);
         }
     }
